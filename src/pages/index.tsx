@@ -70,7 +70,7 @@ const IndexPage: NextPage = () => {
 
   return (
     <div>
-      <h1>Welcome to Saleor App Template (Next.js) 🚀</h1>
+      <h1>Welcome to Payment App 💰</h1>
       <p>This is a boilerplate you can start with, to create an app connected to Saleor</p>
       <h2>Resources</h2>
       <ul>
@@ -115,6 +115,8 @@ const IndexPage: NextPage = () => {
           </Link>
         </li>
       </ul>
+
+      <pre>{JSON.stringify(appBridgeState, null, 2)}</pre>
 
       {appBridgeState?.ready && mounted ? (
         <ClientContent />
