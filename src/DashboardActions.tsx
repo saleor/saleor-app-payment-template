@@ -14,14 +14,16 @@ export const DashboardActions = () => {
   return (
     <div>
       <h2>App running in dashboard!</h2>
-      <div style={{
-        display:'inline-grid',
-        gridGap: '2rem',
-        gridTemplateColumns:'50% 50%'
-      }}>
+      <div
+        style={{
+          display: "inline-grid",
+          gridGap: "2rem",
+          gridTemplateColumns: "50% 50%",
+        }}
+      >
         <Button
           onClick={() => {
-            appBridge?.dispatch({
+            void appBridge?.dispatch({
               type: "notification",
               payload: {
                 status: "success",
@@ -36,7 +38,7 @@ export const DashboardActions = () => {
         </Button>
         <Button
           onClick={() => {
-            appBridge?.dispatch({
+            void appBridge?.dispatch({
               type: "redirect",
               payload: {
                 to: "/orders",

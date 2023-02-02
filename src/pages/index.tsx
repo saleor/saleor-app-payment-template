@@ -15,15 +15,16 @@ const AddToSaleorForm = () => (
       display: "flex",
       gap: "2rem",
     }}
+    method="post"
     onSubmit={(event) => {
       event.preventDefault();
 
       const saleorUrl = new FormData(event.currentTarget).get("saleor-url");
-      const manifestUrl = new URL("/api/manifest", window.location.origin);
+      const manifestUrl = new URL("/api/manifest", window.location.origin).toString();
       const redirectUrl = new URL(
         `/dashboard/apps/install?manifestUrl=${manifestUrl}`,
-        saleorUrl as string
-      ).href;
+        saleorUrl as string,
+      ).toString();
 
       window.open(redirectUrl, "_blank");
     }}
@@ -52,7 +53,7 @@ const IndexPage: NextPage = () => {
     if (appBridgeState?.ready) {
       e.preventDefault();
 
-      appBridge?.dispatch({
+      void appBridge?.dispatch({
         type: "redirect",
         payload: {
           newContext: true,
