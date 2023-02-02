@@ -10,7 +10,8 @@
     "fetch-schema": "curl https://raw.githubusercontent.com/saleor/saleor/${npm_package_saleor_schemaVersion}/saleor/graphql/schema.graphql > graphql/schema.graphql",
     "generate": "graphql-codegen",
     "test": "vitest",
-    "test:ci": "CI=true vitest --coverage"
+    "test:ci": "CI=true vitest --coverage",
+    "prepare": "husky install"
   },
   "saleor": {
     "schemaVersion": "3.10"
@@ -55,6 +56,8 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "2.27.5",
     "eslint-plugin-require-form-method": "1.0.2",
+    "husky": "^8.0.0",
+    "lint-staged": "13.1.0",
     "prettier": "^2.8.3",
     "typescript": "4.9.5"
   }
