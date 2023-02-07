@@ -1,13 +1,8 @@
 import { NextPage } from "next";
 import { useAppBridge } from "@saleor/app-sdk/app-bridge";
 import { Button } from "@saleor/macaw-ui";
-import dynamic from "next/dynamic";
 import { MouseEventHandler, useEffect, useState } from "react";
 import { Link, TextField } from "@material-ui/core";
-
-const ClientContent = dynamic(() => import("../DashboardActions"), {
-  ssr: false,
-});
 
 const AddToSaleorForm = () => (
   <form
@@ -118,9 +113,7 @@ const IndexPage: NextPage = () => {
 
       <pre>{JSON.stringify(appBridgeState, null, 2)}</pre>
 
-      {appBridgeState?.ready && mounted ? (
-        <ClientContent />
-      ) : (
+      {!appBridgeState?.ready && mounted && (
         <div>
           <p>Install this app in your Dashboard and check extra powers!</p>
           {mounted && !global.location.href.includes("localhost") && <AddToSaleorForm />}
