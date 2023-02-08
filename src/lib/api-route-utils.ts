@@ -1,15 +1,14 @@
 import ModernError from "modern-errors";
+import { ObjectSchema } from "yup";
 import { JSONValue } from "../types";
 
 export const JsonParseError = ModernError.subclass("JsonParseError");
-export const parseJsonRequest = async (
-  req: Request,
-): Promise<[Error, null] | [null, JSONValue]> => {
+export const parseJsonRequest = async <S extends ObjectSchema<{}>>(req: Request, schema: S) => {
   try {
     const json = (await req.json()) as JSONValue;
-    return [null, json];
+    return [null, schema.validateSync(json)] as const;
   } catch (err) {
-    return [JsonParseError.normalize(err), null];
+    return [JsonParseError.normalize(err), null] as const;
   }
 };
 

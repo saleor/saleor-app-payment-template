@@ -15,11 +15,8 @@ declare module "vitest" {
   }
 }
 
-export const omitPathsFromJson = (input: string, paths: string[]) =>
+export const omitPathsFromJson = (paths: string[]) => (input: string) =>
   JSON.stringify(omit(paths, JSON.parse(input)));
-
-export const removePatternsFromString = (patterns: RegExp[]) => (input: string) =>
-  patterns.reduce((result, pattern) => result.replace(pattern, ""), input);
 
 const HEADERS_BLACKLIST = new Set([
   "authorization-bearer",
@@ -48,7 +45,10 @@ const removeBlacklistedVariables = (obj: {} | undefined | string): {} | undefine
   return omitDeep(obj, ...VARIABLES_BLACKLIST);
 };
 
-interface Recording {
+/**
+ * This interface is incomplete
+ */
+interface PollyRecording {
   response: {
     content?: {
       mimeType: string;
@@ -66,10 +66,10 @@ interface Recording {
   };
 }
 
-const responseIsJson = (recording: Recording) => {
+const responseIsJson = (recording: PollyRecording) => {
   return recording.response.content?.mimeType.includes("application/json");
 };
-const requestIsJson = (recording: Recording) => {
+const requestIsJson = (recording: PollyRecording) => {
   return recording.request.headers.some(
     ({ name, value }) =>
       name.toLowerCase() === "content-type" && value.includes("application/json"),
@@ -87,7 +87,7 @@ export const setupRecording = (config?: PollyConfig) => {
     polly.server
       .any()
       // Hide sensitive data in headers or in body
-      .on("beforePersist", (_req, recording: Recording) => {
+      .on("beforePersist", (_req, recording: PollyRecording) => {
         recording.response.cookies = [];
 
         recording.response.headers = recording.response.headers.filter(
@@ -97,21 +97,26 @@ export const setupRecording = (config?: PollyConfig) => {
           (el: Record<string, string>) => !HEADERS_BLACKLIST.has(el.name),
         );
 
-        const requestJson = tryJsonParse(recording.request.postData?.text);
-        const responseJson = tryJsonParse(recording.response.content?.text);
-        const filteredRequestJson = removeBlacklistedVariables(requestJson);
-        const filteredResponseJson = removeBlacklistedVariables(responseJson);
-
-        if (filteredRequestJson) {
-          recording.request.postData!.text = JSON.stringify(filteredRequestJson);
+        if (recording.request.postData?.text) {
+          const requestJson = tryJsonParse(recording.request.postData.text);
+          const filteredRequestJson = removeBlacklistedVariables(requestJson);
+          recording.request.postData.text =
+            typeof filteredRequestJson === "string"
+              ? filteredRequestJson
+              : JSON.stringify(filteredRequestJson);
         }
-        if (filteredResponseJson) {
-          recording.response.content!.text = JSON.stringify(filteredResponseJson);
+        if (recording.response.content?.text) {
+          const responseJson = tryJsonParse(recording.response.content.text);
+          const filteredResponseJson = removeBlacklistedVariables(responseJson);
+          recording.response.content.text =
+            typeof filteredResponseJson === "string"
+              ? filteredResponseJson
+              : JSON.stringify(filteredResponseJson);
         }
       })
       // make JSON response and requests more readable
       // https://github.com/Netflix/pollyjs/issues/322
-      .on("beforePersist", (_req, recording: Recording) => {
+      .on("beforePersist", (_req, recording: PollyRecording) => {
         if (responseIsJson(recording)) {
           tryIgnore(
             () => (recording.response.content!.text = JSON.parse(recording.response.content!.text)),
@@ -124,7 +129,7 @@ export const setupRecording = (config?: PollyConfig) => {
           );
         }
       })
-      .on("beforeReplay", (_req, recording: Recording) => {
+      .on("beforeReplay", (_req, recording: PollyRecording) => {
         if (responseIsJson(recording)) {
           tryIgnore(
             () =>
@@ -171,13 +176,13 @@ export const setupRecording = (config?: PollyConfig) => {
   };
 
   beforeEach(async (ctx) => {
-    const recordingsRoot = path.dirname(expect.getState().testPath || "");
-    const recordingsDirectory = path.join(recordingsRoot, "__recordings__");
-
     const { currentTestName } = expect.getState();
     if (!currentTestName) {
       throw new Error(`This function must be run inside a test case!`);
     }
+
+    const recordingsRoot = path.dirname(expect.getState().testPath || "");
+    const recordingsDirectory = path.join(recordingsRoot, "__recordings__");
 
     const [, ...names] = currentTestName.split(" > ");
     const polly = new Polly(
