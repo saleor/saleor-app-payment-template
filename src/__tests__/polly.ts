@@ -149,7 +149,6 @@ export const setupRecording = (config?: PollyConfig) => {
 
   const defaultConfig = {
     ...getRecordingSettings(),
-    // logLevel: "trace",
     adapters: [FetchAdapter, NodeHttpAdapter],
     persister: FSPersister,
     persisterOptions: {
