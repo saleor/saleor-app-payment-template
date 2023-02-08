@@ -12,3 +12,22 @@ export const parseJsonRequest = async (
     return [JsonParseError.normalize(err), null];
   }
 };
+
+export const tryJsonParse = (text: string | undefined) => {
+  if (!text) {
+    return undefined;
+  }
+  try {
+    return JSON.parse(text) as JSONValue;
+  } catch (e) {
+    return text;
+  }
+};
+
+export const tryIgnore = (fn: () => void) => {
+  try {
+    fn();
+  } catch {
+    // noop
+  }
+};
