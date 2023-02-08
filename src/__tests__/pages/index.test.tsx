@@ -16,7 +16,7 @@ describe("App", () => {
     render(<IndexPage />);
 
     expect(
-      screen.queryByText("Install this app in your Dashboard", { exact: false }),
+      screen.getByText("Install this app in your Dashboard", { exact: false }),
     ).toBeInTheDocument();
   });
 });

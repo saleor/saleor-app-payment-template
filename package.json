@@ -8,8 +8,8 @@
     "start": "next start",
     "fetch-schema": "curl https://raw.githubusercontent.com/saleor/saleor/${npm_package_saleor_schemaVersion}/saleor/graphql/schema.graphql > graphql/schema.graphql",
     "generate": "graphql-codegen",
-    "lint": "next lint --fix --dir .",
-    "lint:ci": "next lint --dir .",
+    "lint": "next lint --fix --dir src",
+    "lint:ci": "next lint --dir src",
     "test": "POLLY_MODE=replay vitest",
     "test:ci": "CI=true vitest --coverage",
     "prepare": "husky install"
@@ -72,6 +72,7 @@
     "eslint-config-prettier": "8.6.0",
     "eslint-plugin-import": "2.27.5",
     "eslint-plugin-require-form-method": "1.0.2",
+    "eslint-plugin-testing-library": "5.10.0",
     "husky": "8.0.3",
     "lint-staged": "13.1.1",
     "next-test-api-route-handler": "3.1.8",

@@ -67,6 +67,11 @@
         "@typescript-eslint/no-unsafe-member-access": "off",
         "@typescript-eslint/no-unsafe-return": "off"
       }
+    },
+    {
+      // https://github.com/testing-library/eslint-plugin-testing-library#run-the-plugin-only-against-test-files
+      "files": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
+      "extends": ["plugin:testing-library/react"]
     }
   ],
   "ignorePatterns": ["next.config.js"]
