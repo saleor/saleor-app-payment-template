@@ -1,5 +1,6 @@
 import { SettingsManager } from "@saleor/app-sdk/settings-manager";
 import { merge } from "lodash/fp";
+import { toStringOrEmpty } from "../../lib/api-route-utils";
 
 export interface AppConfigurator<TConfig extends Record<string, unknown>> {
   setConfig(config: TConfig): Promise<void>;
@@ -28,6 +29,34 @@ export class PrivateMetadataAppConfigurator<TConfig extends Record<string, unkno
     } catch (e) {
       throw new Error("Invalid metadata value, cant be parsed");
     }
+  }
+
+  obfuscateValue(value: string) {
+    const unbofuscatedLength = Math.min(4, value.length - 4);
+
+    if (unbofuscatedLength <= 0) {
+      return "••••";
+    }
+
+    const visibleValue = value.slice(-unbofuscatedLength);
+    return `•••• ${visibleValue}`;
+  }
+
+  obfuscateConfig(config: TConfig): TConfig {
+    const entries = Object.entries(config).map(([key, value]) => [
+      key,
+      this.obfuscateValue(toStringOrEmpty(value)),
+    ]);
+
+    return Object.fromEntries(entries) as TConfig;
+  }
+
+  async getConfigObfuscated(): Promise<TConfig | undefined> {
+    const config = await this.getConfig();
+    if (!config) {
+      return undefined;
+    }
+    return this.obfuscateConfig(config);
   }
 
   async setConfig(newConfig: TConfig, replace = false) {

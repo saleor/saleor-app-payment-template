@@ -14,6 +14,7 @@ specifiers:
   '@graphql-codegen/typescript-urql': 3.7.3
   '@graphql-codegen/urql-introspection': 2.2.1
   '@graphql-typed-document-node/core': 3.1.1
+  '@hookform/resolvers': 2.9.11
   '@pollyjs/adapter-fetch': 6.0.5
   '@pollyjs/adapter-node-http': 6.0.5
   '@pollyjs/core': 6.0.5
@@ -46,6 +47,7 @@ specifiers:
   graphql: 16.6.0
   graphql-tag: 2.12.6
   husky: 8.0.3
+  jose: 4.11.4
   jsdom: 21.1.0
   lint-staged: 13.1.1
   lodash: 4.17.21
@@ -57,6 +59,7 @@ specifiers:
   prettier: 2.8.3
   react: 18.2.0
   react-dom: 18.2.0
+  react-hook-form: 7.43.1
   setup-polly-jest: 0.11.0
   typescript: 4.9.5
   urql: 3.0.3
@@ -66,6 +69,7 @@ specifiers:
   zod: ^3.20.2
 
 dependencies:
+  '@hookform/resolvers': 2.9.11_react-hook-form@7.43.1
   '@saleor/app-sdk': 0.28.0_3vryta7zmbcsw4rrqf4axjqggm
   '@saleor/macaw-ui': 0.8.0-pre.21_5ndqzdd6t4rivxsukjv3i3ak2q
   '@urql/exchange-auth': 1.0.0_graphql@16.6.0
@@ -74,6 +78,7 @@ dependencies:
   '@vitest/coverage-c8': 0.28.4_jsdom@21.1.0
   graphql: 16.6.0
   graphql-tag: 2.12.6_graphql@16.6.0
+  jose: 4.11.4
   jsdom: 21.1.0
   lodash: 4.17.21
   modern-errors: 5.5.0
@@ -82,6 +87,7 @@ dependencies:
   pino: 8.9.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-hook-form: 7.43.1_react@18.2.0
   urql: 3.0.3_onqnqwb3ubg5opvemcqf7c2qhy
   vite: 4.1.1_@types+node@18.13.0
   vitest: 0.28.4_jsdom@21.1.0
@@ -1624,6 +1630,14 @@ packages:
     dependencies:
       graphql: 16.6.0
 
+  /@hookform/resolvers/2.9.11_react-hook-form@7.43.1:
+    resolution: {integrity: sha512-bA3aZ79UgcHj7tFV7RlgThzwSSHZgvfbt2wprldRkYBcMopdMvHyO17Wwp/twcJasNFischFfS7oz8Katz8DdQ==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.43.1_react@18.2.0
+    dev: false
+
   /@humanwhocodes/config-array/0.11.8:
     resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@humanwhocodes/config-array/-/config-array-0.11.8.tgz}
     engines: {node: '>=10.10.0'}
@@ -1984,7 +1998,7 @@ packages:
       debug: 4.3.4
       fast-glob: 3.2.12
       graphql: 16.6.0
-      jose: 4.11.2
+      jose: 4.11.4
       next: 13.1.6_biqbaboplfbrettd7655fr4n2y
       raw-body: 2.5.1
       react: 18.2.0
@@ -3058,7 +3072,7 @@ packages:
     dev: false
 
   /busboy/1.6.0:
-    resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/busboy/-/busboy-1.6.0.tgz}
+    resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
     engines: {node: '>=10.16.0'}
     dependencies:
       streamsearch: 1.1.0
@@ -5373,8 +5387,8 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /jose/4.11.2:
-    resolution: {integrity: sha512-njj0VL2TsIxCtgzhO+9RRobBvws4oYyCM8TpvoUQwl/MbIM3NFJRR9+e6x0sS5xXaP1t6OCBkaBME98OV9zU5A==}
+  /jose/4.11.4:
+    resolution: {integrity: sha512-94FdcR8felat4vaTJyL/WVdtlWLlsnLMZP8v+A0Vru18K3bQ22vn7TtpVh3JlgBFNIlYOUlGqwp/MjRPOnIyCQ==}
     dev: false
 
   /js-sdsl/4.3.0:
@@ -6600,6 +6614,15 @@ packages:
       react: 18.2.0
     dev: false
 
+  /react-hook-form/7.43.1_react@18.2.0:
+    resolution: {integrity: sha512-+s3+s8LLytRMriwwuSqeLStVjRXFGxgjjx2jED7Z+wz1J/88vpxieRQGvJVvzrzVxshZ0BRuocFERb779m2kNg==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /react-inlinesvg/3.0.1_react@18.2.0:
     resolution: {integrity: sha512-cBfoyfseNI2PkDA7ZKIlDoHq0eMfpoC3DhKBQNC+/X1M4ZQB+aXW+YiNPUDDDKXUsGDUIZWWiZWNFeauDIVdoA==}
     peerDependencies:
@@ -7106,7 +7129,7 @@ packages:
     dev: true
 
   /streamsearch/1.1.0:
-    resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/streamsearch/-/streamsearch-1.1.0.tgz}
+    resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
     engines: {node: '>=10.0.0'}
 
   /string-argv/0.3.1:
