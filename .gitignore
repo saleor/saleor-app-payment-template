@@ -47,3 +47,9 @@ generated/
 
 # Sentry
 .sentryclirc
+
+# Sentry
+.sentryclirc
+
+# Sentry
+next.config.original.js
