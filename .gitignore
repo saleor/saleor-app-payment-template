@@ -49,7 +49,4 @@ generated/
 .sentryclirc
 
 # Sentry
-.sentryclirc
-
-# Sentry
 next.config.original.js
