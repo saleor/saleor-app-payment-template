@@ -25,6 +25,7 @@
     "@saleor/app-sdk": "0.28.0",
     "@saleor/macaw-ui": "0.7.2",
     "@sentry/nextjs": "7.36.0",
+    "@sinclair/typebox": "0.25.21",
     "@urql/exchange-auth": "1.0.0",
     "@vitejs/plugin-react": "3.1.0",
     "@vitest/coverage-c8": "0.28.4",

@@ -24,6 +24,7 @@ specifiers:
   '@saleor/app-sdk': 0.28.0
   '@saleor/macaw-ui': 0.7.2
   '@sentry/nextjs': 7.36.0
+  '@sinclair/typebox': 0.25.21
   '@testing-library/jest-dom': 5.16.5
   '@testing-library/react': 13.4.0
   '@testing-library/react-hooks': 8.0.1
@@ -73,6 +74,7 @@ dependencies:
   '@saleor/app-sdk': registry.npmjs.org/@saleor/app-sdk/0.28.0_3vryta7zmbcsw4rrqf4axjqggm
   '@saleor/macaw-ui': registry.npmjs.org/@saleor/macaw-ui/0.7.2_2dwar4pp5qoelfawvjffoi6dne
   '@sentry/nextjs': registry.npmjs.org/@sentry/nextjs/7.36.0_next@13.1.6+react@18.2.0
+  '@sinclair/typebox': registry.npmjs.org/@sinclair/typebox/0.25.21
   '@urql/exchange-auth': registry.npmjs.org/@urql/exchange-auth/1.0.0_graphql@16.6.0
   '@vitejs/plugin-react': registry.npmjs.org/@vitejs/plugin-react/3.1.0_vite@4.1.1
   '@vitest/coverage-c8': registry.npmjs.org/@vitest/coverage-c8/0.28.4_jsdom@21.1.0
@@ -2836,7 +2838,6 @@ packages:
     resolution: {integrity: sha512-gFukHN4t8K4+wVC+ECqeqwzBDeFeTzBXroBTqE6vcWrQGbEUpHO7LYdG0f4xnvYq4VOEwITSlHlp0JBAIFMS/g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@sinclair/typebox/-/typebox-0.25.21.tgz}
     name: '@sinclair/typebox'
     version: 0.25.21
-    dev: true
 
   registry.npmjs.org/@sindresorhus/fnv1a/2.0.1:
     resolution: {integrity: sha512-suq9tRQ6bkpMukTG5K5z0sPWB7t0zExMzZCdmYm6xTSSIm/yCKNm7VCL36wVeyTsFr597/UhU1OAYdHGMDiHrw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@sindresorhus/fnv1a/-/fnv1a-2.0.1.tgz}
