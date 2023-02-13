@@ -10,6 +10,11 @@ import {
 } from "../modules/payment-configuration/payment-config";
 import { AppContainer } from "../modules/ui/AppContainer";
 import { Input } from "../modules/ui/Input";
+import { Form } from "../modules/ui/Form/Form";
+
+const defaultFormValues: PaymentProviderConfig = {
+  fakeApiKey: "",
+};
 
 const ConfigPage: NextPage = () => {
   const { appBridgeState, appBridge } = useAppBridge();
@@ -17,7 +22,7 @@ const ConfigPage: NextPage = () => {
   const { handleSubmit, control, setError } = useForm<PaymentProviderConfig>({
     resolver: zodResolver(paymentProviderSchema),
     defaultValues: async () => {
-      if (!saleorApiUrl || !token) return undefined;
+      if (!saleorApiUrl || !token) return defaultFormValues;
       const res = await fetch("/api/config/fetch", {
         headers: {
           "saleor-api-url": saleorApiUrl,
@@ -38,7 +43,7 @@ const ConfigPage: NextPage = () => {
             apiMessage: await res.text(),
           },
         });
-        return undefined;
+        return defaultFormValues;
       }
     },
   });
@@ -102,27 +107,26 @@ const ConfigPage: NextPage = () => {
 
   return (
     <AppContainer>
-      <Box
-        as="form"
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onSubmit={handleSubmit(onSubmit)}
-        display="flex"
-        flexDirection="column"
-        gap={8}
-      >
-        <Text variant="heading">Payment Provider settings</Text>
+      <Box display="flex" flexDirection="column" gap={8}>
+        <Form
+          method="post"
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Text variant="heading">Payment Provider settings</Text>
 
-        <Controller
-          control={control}
-          name="fakeApiKey"
-          render={({ field, fieldState }) => (
-            <Input label="API_KEY" {...field} error={fieldState.error} />
-          )}
-        />
+          <Controller
+            control={control}
+            name="fakeApiKey"
+            render={({ field, fieldState }) => (
+              <Input label="API_KEY" {...field} error={fieldState.error} />
+            )}
+          />
 
-        <div>
-          <Button type="submit">Save</Button>
-        </div>
+          <div>
+            <Button type="submit">Save</Button>
+          </div>
+        </Form>
       </Box>
     </AppContainer>
   );
