@@ -8,8 +8,8 @@ import {
   PaymentProviderConfig,
   paymentProviderSchema,
 } from "../modules/payment-configuration/payment-config";
-import { AppContainer } from "../modules/ui/AppContainer";
-import { Input } from "../modules/ui/Input";
+import { AppContainer } from "../modules/ui/AppContainer/AppContainer";
+import { Input } from "../modules/ui/Input/Input";
 import { Form } from "../modules/ui/Form/Form";
 
 const defaultFormValues: PaymentProviderConfig = {
