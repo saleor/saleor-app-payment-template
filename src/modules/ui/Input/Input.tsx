@@ -1,9 +1,9 @@
 import { Box, Text } from "@saleor/macaw-ui/next";
-import React from "react";
+import type { FC } from "react";
 import { FieldError } from "react-hook-form";
 import { input, label as labelStyles, wrapper } from "./Input.css";
 
-export const Input: React.FC<
+export const Input: FC<
   {
     label: string;
     error: FieldError | undefined;
