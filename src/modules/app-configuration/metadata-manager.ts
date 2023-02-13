@@ -5,7 +5,7 @@ import {
   FetchAppDetailsQuery,
   UpdateAppMetadataDocument,
 } from "../../../generated/graphql";
-import { env } from "../env/server.mjs";
+import { env } from "../../lib/env.mjs";
 
 export async function fetchAllMetadata(client: Client): Promise<MetadataEntry[]> {
   const { error, data } = await client
