@@ -12,15 +12,14 @@ export const handler = async (
   res: NextApiResponse,
   ctx: ProtectedHandlerContext,
 ) => {
-  console.log(req.body);
   const [err, json] = await parseRawBodyToJson(req, paymentProviderSchema);
 
   if (err) {
-    return res.status(400).json({ error: err.message });
+    return res.status(400).send(err.message);
   }
 
   if (!json) {
-    return res.status(400).json({ error: "No input" });
+    return res.status(400).send("No input provided");
   }
 
   const client = createClient(ctx.authData.saleorApiUrl, async () =>
@@ -34,7 +33,7 @@ export const handler = async (
 
   await configurator.setConfig(json);
 
-  return res.status(200).json({ message: "ok" });
+  return res.status(200).send("ok");
 };
 
 export default createProtectedHandler(handler, saleorApp.apl, ["MANAGE_SETTINGS", "MANAGE_APPS"]);

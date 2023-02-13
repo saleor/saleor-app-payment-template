@@ -22,6 +22,9 @@ export const parseRawBodyToJson = async <T extends z.AnyZodObject>(
     if (typeof req.body !== "string") {
       throw new JsonParseError("Invalid body type");
     }
+    if (req.body === "") {
+      throw new JsonParseError("No request body");
+    }
     const json = JSON.parse(req.body) as unknown;
     return [null, schema.parse(json) as z.infer<T>] as const;
   } catch (err) {

@@ -24,9 +24,7 @@ export const handler = async (
   const [err, obfuscatedConfig] = await unpackPromise(configurator.getConfigObfuscated());
 
   if (err) {
-    return res.status(500).json({
-      error: "Error while fetching config",
-    });
+    return res.status(500).send("Error while fetching config");
   }
 
   if (obfuscatedConfig) {
