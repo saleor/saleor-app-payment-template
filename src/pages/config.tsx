@@ -1,4 +1,5 @@
 import { useAppBridge, withAuthorization } from "@saleor/app-sdk/app-bridge";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Text } from "@saleor/macaw-ui/next";
 import { NextPage } from "next";
@@ -11,91 +12,81 @@ import {
 import { AppContainer } from "../modules/ui/AppContainer/AppContainer";
 import { Input } from "../modules/ui/Input/Input";
 import { Form } from "../modules/ui/Form/Form";
+import { FetchError, useFetch, usePost } from "../lib/use-fetch";
 
-const defaultFormValues: PaymentProviderConfig = {
-  fakeApiKey: "",
-};
+const actionId = "payment-form";
 
 const ConfigPage: NextPage = () => {
   const { appBridgeState, appBridge } = useAppBridge();
-  const { saleorApiUrl, token } = appBridgeState ?? {};
-  const { handleSubmit, control, setError } = useForm<PaymentProviderConfig>({
-    resolver: zodResolver(paymentProviderSchema),
-    defaultValues: async () => {
-      if (!saleorApiUrl || !token) return defaultFormValues;
-      const res = await fetch("/api/config/fetch", {
-        headers: {
-          "saleor-api-url": saleorApiUrl,
-          "authorization-bearer": token,
-        },
-      });
-      if (res.ok) {
-        const json: unknown = await res.json();
-        return paymentProviderSchema.parse(json);
-      } else {
-        await appBridge?.dispatch({
-          type: "notification",
-          payload: {
-            title: "Form error",
-            text: "Error while fetching initial form data",
-            status: "error",
-            actionId: "payment-form",
-            apiMessage: await res.text(),
-          },
-        });
-        return defaultFormValues;
-      }
-    },
-  });
+  const { token } = appBridgeState ?? {};
 
   const hasPermissions = checkTokenPermissions(token, ["MANAGE_APPS", "MANAGE_SETTINGS"]);
 
-  async function onSubmit(values: PaymentProviderConfig) {
-    if (!saleorApiUrl || !token) {
-      return;
-    }
+  const [isLoading, setIsLoading] = useState(true);
 
-    try {
-      const res = await fetch("/api/config/update", {
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: {
-          "saleor-api-url": saleorApiUrl,
-          "authorization-bearer": token,
-        },
-      });
-      if (res.ok) {
-        return await appBridge?.dispatch({
-          type: "notification",
-          payload: {
-            title: "Form saved",
-            text: "App configuration was saved successfully",
-            status: "success",
-            actionId: "payment-form",
-          },
-        });
-      }
+  console.log(appBridgeState);
 
-      let message;
-      if (res.status === 402) message = "Unauthorized";
-      else if (res.status === 500) message = "Server error";
-      else message = "Unknown error";
+  const {
+    handleSubmit,
+    control,
+    reset,
+    setError,
+    formState: { isSubmitting },
+  } = useForm<PaymentProviderConfig>({
+    resolver: zodResolver(paymentProviderSchema),
+    defaultValues: {
+      fakeApiKey: "",
+    },
+  });
 
-      setError("root", { message });
+  useFetch("/api/config/fetch", {
+    schema: paymentProviderSchema,
+    onFinished: () => setIsLoading(false),
+    onSuccess: (data) => {
+      reset(data);
+    },
+    onError: async (err) => {
+      const message = err instanceof FetchError ? err.body : err.message;
       await appBridge?.dispatch({
         type: "notification",
         payload: {
           title: "Form error",
-          text: message,
+          text: "Error while fetching initial form data",
           status: "error",
-          actionId: "payment-form",
-          apiMessage: await res.text(),
+          actionId,
+          apiMessage: message,
         },
       });
-    } catch (err) {
-      setError("root", { message: "Error while sending form" });
-    }
-  }
+    },
+  });
+
+  const postForm = usePost("/api/config/update", {
+    onDone: async () => {
+      await appBridge?.dispatch({
+        type: "notification",
+        payload: {
+          title: "Form saved",
+          text: "App configuration was saved successfully",
+          status: "success",
+          actionId: "payment-form",
+        },
+      });
+    },
+    onError: async (err) => {
+      const apiMessage = err instanceof FetchError ? err.body : err.name;
+      await appBridge?.dispatch({
+        type: "notification",
+        payload: {
+          title: "Form error",
+          text: err.message,
+          status: "error",
+          actionId,
+          apiMessage,
+        },
+      });
+      setError("root", { message: err.message });
+    },
+  });
 
   if (!hasPermissions) {
     return (
@@ -111,7 +102,7 @@ const ConfigPage: NextPage = () => {
         <Form
           method="post"
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit((data) => postForm(data))}
         >
           <Text variant="heading">Payment Provider settings</Text>
 
@@ -119,12 +110,14 @@ const ConfigPage: NextPage = () => {
             control={control}
             name="fakeApiKey"
             render={({ field, fieldState }) => (
-              <Input label="API_KEY" {...field} error={fieldState.error} />
+              <Input label="API_KEY" {...field} error={fieldState.error} disabled={isLoading} />
             )}
           />
 
           <div>
-            <Button type="submit">Save</Button>
+            <Button type="submit">
+              {isLoading ? "Loading" : isSubmitting ? "Saving..." : "Save"}
+            </Button>
           </div>
         </Form>
       </Box>

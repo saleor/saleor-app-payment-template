@@ -22,4 +22,7 @@ export const input = style({
   borderWidth: "1px",
   borderStyle: "solid",
   borderRadius: vars.borderRadius[2],
+  ":disabled": {
+    backgroundColor: vars.colors.background.subdued,
+  },
 });
