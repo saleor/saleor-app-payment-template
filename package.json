@@ -23,7 +23,7 @@
     "@saleor/app-sdk": "0.28.0",
     "@saleor/macaw-ui": "0.8.0-pre.21",
     "@urql/exchange-auth": "1.0.0",
-    "@vanilla-extract/css": "^1.9.5",
+    "@vanilla-extract/css": "1.9.5",
     "@vitejs/plugin-react": "3.1.0",
     "@vitest/coverage-c8": "0.28.4",
     "graphql": "16.6.0",
@@ -42,7 +42,7 @@
     "vite": "4.1.1",
     "vitest": "0.28.4",
     "yup": "1.0.0-beta.8",
-    "zod": "^3.20.2"
+    "zod": "3.20.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "3.0.0",
