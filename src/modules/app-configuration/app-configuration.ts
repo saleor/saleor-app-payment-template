@@ -7,6 +7,8 @@ export interface AppConfigurator<TConfig extends Record<string, unknown>> {
   getConfig(): Promise<TConfig | undefined>;
 }
 
+export const OBFUSCATION_DOTS = "••••";
+
 export class PrivateMetadataAppConfigurator<TConfig extends Record<string, unknown>>
   implements AppConfigurator<TConfig>
 {
@@ -35,11 +37,11 @@ export class PrivateMetadataAppConfigurator<TConfig extends Record<string, unkno
     const unbofuscatedLength = Math.min(4, value.length - 4);
 
     if (unbofuscatedLength <= 0) {
-      return "••••";
+      return OBFUSCATION_DOTS;
     }
 
     const visibleValue = value.slice(-unbofuscatedLength);
-    return `•••• ${visibleValue}`;
+    return `${OBFUSCATION_DOTS}${visibleValue}`;
   }
 
   obfuscateConfig(config: TConfig): TConfig {

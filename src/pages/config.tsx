@@ -3,7 +3,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Text } from "@saleor/macaw-ui/next";
 import { NextPage } from "next";
-import { Controller, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { checkTokenPermissions } from "../modules/jwt/check-token-offline";
 import {
   PaymentProviderConfig,
@@ -24,18 +24,20 @@ const ConfigPage: NextPage = () => {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  const formMethods = useForm<PaymentProviderConfig>({
+    resolver: zodResolver(paymentProviderSchema),
+    defaultValues: {
+      fakeApiKey: "",
+    },
+  });
+
   const {
     handleSubmit,
     control,
     reset,
     setError,
     formState: { isSubmitting },
-  } = useForm<PaymentProviderConfig>({
-    resolver: zodResolver(paymentProviderSchema),
-    defaultValues: {
-      fakeApiKey: "",
-    },
-  });
+  } = formMethods;
 
   useFetch("/api/config", {
     schema: paymentProviderSchema,
@@ -97,27 +99,29 @@ const ConfigPage: NextPage = () => {
   return (
     <AppContainer>
       <Box display="flex" flexDirection="column" gap={8}>
-        <Form
-          method="post"
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onSubmit={handleSubmit((data) => postForm(data))}
-        >
-          <Text variant="heading">Payment Provider settings</Text>
+        <FormProvider {...formMethods}>
+          <Form
+            method="post"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onSubmit={handleSubmit((data) => postForm(data))}
+          >
+            <Text variant="heading">Payment Provider settings</Text>
 
-          <Controller
-            control={control}
-            name="fakeApiKey"
-            render={({ field, fieldState }) => (
-              <Input label="API_KEY" {...field} error={fieldState.error} disabled={isLoading} />
-            )}
-          />
+            <Input
+              control={control}
+              autoClearEncrypted
+              label="API_KEY"
+              name="fakeApiKey"
+              disabled={isLoading}
+            />
 
-          <div>
-            <Button type="submit" disabled={isLoading || isSubmitting}>
-              {isLoading ? "Loading" : isSubmitting ? "Saving..." : "Save"}
-            </Button>
-          </div>
-        </Form>
+            <div>
+              <Button type="submit" disabled={isLoading || isSubmitting}>
+                {isLoading ? "Loading" : isSubmitting ? "Saving..." : "Save"}
+              </Button>
+            </div>
+          </Form>
+        </FormProvider>
       </Box>
     </AppContainer>
   );
