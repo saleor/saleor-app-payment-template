@@ -24,8 +24,6 @@ const ConfigPage: NextPage = () => {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log(appBridgeState);
-
   const {
     handleSubmit,
     control,
