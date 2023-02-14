@@ -10,10 +10,13 @@ const withVanillaExtract = createVanillaExtractPlugin();
  */
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/lib/env.mjs"));
 
-
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
 };
 
-export default withVanillaExtract(config);
+const isSentryEnabled = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
+
+export default isSentryEnabled
+  ? withSentryConfig(withVanillaExtract(config), { silent: true }, { hideSourcemaps: true })
+  : withVanillaExtract(config);
