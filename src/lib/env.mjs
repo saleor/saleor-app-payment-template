@@ -1,5 +1,11 @@
 // @ts-check
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+/*
+ * Environment variables validation from t3-oss/create-t3-app
+ * https://github.com/t3-oss/create-t3-app/blob/next/cli/template/base/src/env.mjs
+ * Copyright (c) 2022 Shoubhit Dash
+ * Licensed under MIT License
+ * */
 import { z } from "zod";
 
 /**
