@@ -113,7 +113,7 @@ const ConfigPage: NextPage = () => {
           />
 
           <div>
-            <Button type="submit">
+            <Button type="submit" disabled={isLoading || isSubmitting}>
               {isLoading ? "Loading" : isSubmitting ? "Saving..." : "Save"}
             </Button>
           </div>
