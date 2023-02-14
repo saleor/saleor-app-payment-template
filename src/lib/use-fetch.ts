@@ -1,6 +1,6 @@
 import { useAppBridge } from "@saleor/app-sdk/app-bridge";
 import ModernError from "modern-errors";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { z } from "zod";
 import { JSONValue } from "../types";
 
@@ -92,8 +92,9 @@ async function handleResponse<T>(res: Response, config: FetchConfig<T> | undefin
 }
 
 /** Fetch function, can be replaced to any fetching library, e.g. React Query, useSWR */
-export const useFetch = <T>(endpoint: string, config?: FetchConfig<T>) => {
+export const useFetch = <T>(endpoint: string, config?: FetchConfigWithSchema<T>) => {
   const { fetch, isReady } = useFetchFn();
+  const configRef = useRef(config);
 
   useEffect(() => {
     if (!isReady) {
@@ -102,9 +103,9 @@ export const useFetch = <T>(endpoint: string, config?: FetchConfig<T>) => {
 
     void (async () => {
       const res = await fetch(endpoint);
-      await handleResponse(res, config);
+      await handleResponse(res, configRef.current);
     })();
-  }, [config, endpoint, fetch, isReady]);
+  }, [endpoint, fetch, isReady]);
 };
 
 export const usePost = <T>(endpoint: string, config?: FetchConfig<T>) => {
