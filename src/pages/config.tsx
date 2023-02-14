@@ -7,6 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { checkTokenPermissions } from "../modules/jwt/check-token-offline";
 import {
   PaymentProviderConfig,
+  paymentProviderFormSchema,
   paymentProviderSchema,
 } from "../modules/payment-configuration/payment-config";
 import { AppContainer } from "../modules/ui/AppContainer/AppContainer";
@@ -25,7 +26,7 @@ const ConfigPage: NextPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const formMethods = useForm<PaymentProviderConfig>({
-    resolver: zodResolver(paymentProviderSchema),
+    resolver: zodResolver(paymentProviderFormSchema),
     defaultValues: {
       fakeApiKey: "",
     },
@@ -37,6 +38,7 @@ const ConfigPage: NextPage = () => {
     reset,
     setError,
     formState: { isSubmitting },
+    resetField,
   } = formMethods;
 
   useFetch("/api/config", {
@@ -107,13 +109,23 @@ const ConfigPage: NextPage = () => {
           >
             <Text variant="heading">Payment Provider settings</Text>
 
-            <Input
-              control={control}
-              autoClearEncrypted
-              label="API_KEY"
-              name="fakeApiKey"
-              disabled={isLoading}
-            />
+            <Box display="flex" gap={6} alignItems="flex-end">
+              <Input
+                control={control}
+                autoClearEncrypted
+                label="API_KEY"
+                name="fakeApiKey"
+                disabled={isLoading}
+              />
+              <Button
+                variant="secondary"
+                size="small"
+                type="button"
+                onClick={() => resetField("fakeApiKey")}
+              >
+                Reset
+              </Button>
+            </Box>
 
             <div>
               <Button type="submit" disabled={isLoading || isSubmitting}>

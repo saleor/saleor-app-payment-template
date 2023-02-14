@@ -5,7 +5,6 @@ export const wrapper = style({
   display: "flex",
   flexDirection: "column",
   gap: vars.space[4],
-  maxWidth: "50%",
 });
 
 export const label = style({

@@ -26,7 +26,7 @@ export const Input = <
   }, [field.value]);
 
   return (
-    <Box display="flex" flexDirection="column" gap={2}>
+    <Box display="flex" flexDirection="column" gap={2} flexGrow="1">
       <label className={wrapper}>
         <span className={labelStyles}>{labelText}</span>
         <input
