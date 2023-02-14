@@ -12,9 +12,9 @@ export const FetchError = ModernError.subclass("FetchError", {
 });
 export const FetchParseError = ModernError.subclass("FetchParseError");
 
-type FetchConfigWithSchema<T extends z.ZodTypeAny> = {
-  schema: T;
-  onSuccess?: (data: z.infer<T>) => void | Promise<void>;
+type FetchConfigWithSchema<T> = {
+  schema: z.ZodType<T>;
+  onSuccess?: (data: z.infer<z.ZodType<T>>) => void | Promise<void>;
   onError?: (
     err: InstanceType<typeof FetchError> | InstanceType<typeof FetchParseError>,
   ) => void | Promise<void>;
@@ -30,9 +30,9 @@ type FetchConfigWithoutSchema = {
   onFinished?: () => void | Promise<void>;
 };
 
-type FetchConfig<T extends z.ZodTypeAny> = FetchConfigWithoutSchema | FetchConfigWithSchema<T>;
+type FetchConfig<T> = FetchConfigWithoutSchema | FetchConfigWithSchema<T>;
 
-const isConfigWithSchema = <T extends z.ZodTypeAny>(
+const isConfigWithSchema = <T>(
   config: FetchConfig<T> | undefined,
 ): config is FetchConfigWithSchema<T> => {
   return !!config?.schema;
@@ -62,10 +62,7 @@ export const useFetchFn = () => {
   };
 };
 
-async function handleResponse<T extends z.ZodTypeAny>(
-  res: Response,
-  config: FetchConfig<T> | undefined,
-): Promise<void> {
+async function handleResponse<T>(res: Response, config: FetchConfig<T> | undefined): Promise<void> {
   if (!res.ok) {
     void config?.onError?.(
       new FetchError(res.statusText, {
@@ -82,7 +79,7 @@ async function handleResponse<T extends z.ZodTypeAny>(
   try {
     if (isConfigWithSchema(config)) {
       const json = (await res.json()) as JSONValue;
-      const data = config.schema.parse(json) as T;
+      const data = config.schema.parse(json);
       void config?.onSuccess?.(data);
     } else {
       void config?.onDone?.();
@@ -95,7 +92,7 @@ async function handleResponse<T extends z.ZodTypeAny>(
 }
 
 /** Fetch function, can be replaced to any fetching library, e.g. React Query */
-export const useFetch = <T extends z.ZodTypeAny>(endpoint: string, config?: FetchConfig<T>) => {
+export const useFetch = <T>(endpoint: string, config?: FetchConfig<T>) => {
   const { fetch, isReady } = useFetchFn();
 
   useEffect(() => {
@@ -111,7 +108,7 @@ export const useFetch = <T extends z.ZodTypeAny>(endpoint: string, config?: Fetc
   }, [isReady, fetch]);
 };
 
-export const usePost = <T extends z.ZodTypeAny>(endpoint: string, config?: FetchConfig<T>) => {
+export const usePost = <T>(endpoint: string, config?: FetchConfig<T>) => {
   const { fetch, isReady } = useFetchFn();
 
   const submit = useCallback(
