@@ -48,9 +48,6 @@ export const tryIgnore = (fn: () => void) => {
   }
 };
 
-export const toStringOrUndefined = (value: string | string[] | undefined) =>
-  value ? value.toString() : undefined;
-
 export const toStringOrEmpty = (value: unknown) => {
   if (typeof value === "string") return value;
   return "";
