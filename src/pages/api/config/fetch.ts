@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { unpackPromise } from "../../../lib/api-route-utils";
 import { createClient } from "../../../lib/create-graphq-client";
 import { createSettingsManager } from "../../../modules/app-configuration/metadata-manager";
-import { paymentProviderSchema } from "../../../modules/payment-configuration/payment-config";
+import { PaymentProviderConfig } from "../../../modules/payment-configuration/payment-config";
 import { PaymentProviderConfiguratior } from "../../../modules/payment-configuration/payment-configuration";
 import { saleorApp } from "../../../saleor-app";
 
@@ -31,7 +31,7 @@ export const handler = async (
     return res.status(200).json(obfuscatedConfig);
   }
 
-  return res.status(200).json(paymentProviderSchema.default({ fakeApiKey: "" }));
+  return res.status(200).json({ fakeApiKey: "" } satisfies PaymentProviderConfig);
 };
 
 export default createProtectedHandler(handler, saleorApp.apl, ["MANAGE_SETTINGS", "MANAGE_APPS"]);

@@ -3,6 +3,7 @@ import ModernError from "modern-errors";
 import { useCallback, useEffect, useRef } from "react";
 import { z } from "zod";
 import { JSONValue } from "../types";
+import { unpackThrowable } from "./api-route-utils";
 
 export const FetchError = ModernError.subclass("FetchError", {
   props: {
@@ -44,10 +45,13 @@ export const useFetchFn = () => {
 
   const customFetch = useCallback(
     (info: RequestInfo | URL, init?: RequestInit | undefined) => {
+      const [_, json] = unpackThrowable(() => JSON.stringify(init?.body));
       return fetch(info, {
         ...init,
+        body: json ?? init?.body,
         headers: {
           ...init?.headers,
+          "content-type": json ? "application/json" : "text/plain",
           "saleor-api-url": saleorApiUrl ?? "",
           "authorization-bearer": token ?? "",
         },
