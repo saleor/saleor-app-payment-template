@@ -91,7 +91,7 @@ async function handleResponse<T>(res: Response, config: FetchConfig<T> | undefin
   }
 }
 
-/** Fetch function, can be replaced to any fetching library, e.g. React Query */
+/** Fetch function, can be replaced to any fetching library, e.g. React Query, useSWR */
 export const useFetch = <T>(endpoint: string, config?: FetchConfig<T>) => {
   const { fetch, isReady } = useFetchFn();
 
@@ -104,8 +104,7 @@ export const useFetch = <T>(endpoint: string, config?: FetchConfig<T>) => {
       const res = await fetch(endpoint);
       await handleResponse(res, config);
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, fetch]);
+  }, [config, endpoint, fetch, isReady]);
 };
 
 export const usePost = <T>(endpoint: string, config?: FetchConfig<T>) => {
