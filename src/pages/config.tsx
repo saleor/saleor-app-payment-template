@@ -37,7 +37,7 @@ const ConfigPage: NextPage = () => {
     },
   });
 
-  useFetch("/api/config/fetch", {
+  useFetch("/api/config", {
     schema: paymentProviderSchema,
     onFinished: () => setIsLoading(false),
     onSuccess: (data) => {
@@ -58,7 +58,7 @@ const ConfigPage: NextPage = () => {
     },
   });
 
-  const postForm = usePost("/api/config/update", {
+  const postForm = usePost("/api/config", {
     onDone: async () => {
       await appBridge?.dispatch({
         type: "notification",
