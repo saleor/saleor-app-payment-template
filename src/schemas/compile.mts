@@ -1,12 +1,7 @@
 import Fs from "node:fs/promises";
 import Path from "node:path";
-import StandaloneCode from "ajv/dist/standalone";
-import type { AnySchemaObject } from "ajv";
-import { compile } from "json-schema-to-typescript";
-import { getAjv } from "./ajv.mjs";
+import { compileSchemaToJs, compileSchemaToTypes } from "./compiler.mjs";
 import type { JSONValue } from "@/types.js";
-
-type JSONSchema4 = Parameters<typeof compile>[0];
 
 const __filename = new URL("", import.meta.url).pathname;
 const __dirname = new URL(".", import.meta.url).pathname;
@@ -16,34 +11,19 @@ async function run() {
 
   await Promise.all(
     allSchemas.map(async (filepath) => {
-      const ajv = getAjv({
-        code: {
-          source: true,
-          esm: true,
-          optimize: true,
-        },
-      });
       const schema = await readJson(filepath);
+
       const filename = Path.basename(filepath);
       const schemaName = filename.replace(/\.schema\.json$/, "");
-      const jsFilename = schemaName + ".mjs";
-      const tsFilename = schemaName + ".d.mts";
       const dirname = Path.dirname(filepath);
 
-      const validate = ajv.compile(schema as AnySchemaObject);
-      const sourceCode = StandaloneCode(ajv, validate);
-      await Fs.writeFile(Path.join(dirname, jsFilename), sourceCode, "utf-8");
+      const jsCode = await compileSchemaToJs(schemaName, schema);
+      const jsFilename = schemaName + ".mjs";
+      await Fs.writeFile(Path.join(dirname, jsFilename), jsCode, "utf-8");
 
-      const types = await compile(schema as JSONSchema4, schemaName, { unknownAny: true });
-      const typesWithDefaultExport = [
-        `import type { ValidateFunction } from "ajv";`,
-        types,
-        `declare const Validate${schemaName}: ValidateFunction<${schemaName}>;`,
-        `export default Validate${schemaName};`,
-      ].join("\n");
-      await Fs.writeFile(Path.join(dirname, tsFilename), typesWithDefaultExport, "utf-8");
-
-      return { filename, dirname, schemaName };
+      const typescriptCode = await compileSchemaToTypes(schemaName, schema);
+      const tsFilename = schemaName + ".d.mts";
+      await Fs.writeFile(Path.join(dirname, tsFilename), typescriptCode, "utf-8");
     }),
   );
 }
