@@ -42,7 +42,7 @@ export const handler = async (
   }
 
   res.setHeader("allow", "GET, POST");
-  return res.status(HttpStatus.MethodNotAllowed).send({
+  return res.status(HttpStatus.MethodNotAllowed).json({
     ok: false,
     message: `Method ${req.method ?? ""} Not Allowed`,
   });
