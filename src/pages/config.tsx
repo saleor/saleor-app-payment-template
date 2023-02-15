@@ -105,7 +105,6 @@ const ConfigPage: NextPage = () => {
       <Box display="flex" flexDirection="column" gap={8}>
         <FormProvider {...formMethods}>
           <Form
-            method="post"
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onSubmit={handleSubmit((data) => postForm(data))}
           >
