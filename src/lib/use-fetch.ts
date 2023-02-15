@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef } from "react";
 import { z } from "zod";
 import { JSONValue } from "../types";
 import { tryJsonParse } from "./api-route-utils";
-import { getJsonOrText } from "./json";
 
 export const FetchError = ModernError.subclass("FetchError", {
   props: {
@@ -29,14 +28,12 @@ export const useFetchFn = () => {
 
   const customFetch = useCallback(
     (info: RequestInfo | URL, init?: RequestInit | undefined) => {
-      const { isJson, json, text } = getJsonOrText(init?.body);
-
       return fetch(info, {
         ...init,
-        body: isJson ? JSON.stringify(json) : text,
+        body: JSON.stringify(init?.body),
         headers: {
           ...init?.headers,
-          "content-type": isJson ? "application/json" : "text/plain",
+          "content-type": "application/json",
           "saleor-api-url": saleorApiUrl ?? "",
           "authorization-bearer": token ?? "",
         },
