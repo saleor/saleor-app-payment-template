@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Text } from "@saleor/macaw-ui/next";
 import { NextPage } from "next";
 import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
 import { checkTokenPermissions } from "../modules/jwt/check-token-offline";
 import {
   PaymentProviderConfig,
@@ -63,7 +64,8 @@ const ConfigPage: NextPage = () => {
   });
 
   const postForm = usePost("/api/config", {
-    onDone: async () => {
+    schema: z.unknown(),
+    onSuccess: async () => {
       await appBridge?.dispatch({
         type: "notification",
         payload: {

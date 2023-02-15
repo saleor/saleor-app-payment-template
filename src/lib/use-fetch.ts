@@ -3,7 +3,7 @@ import ModernError from "modern-errors";
 import { useCallback, useEffect, useRef } from "react";
 import { z } from "zod";
 import { JSONValue } from "../types";
-import { unpackThrowable } from "./api-route-utils";
+import { tryJsonParse, unpackThrowable } from "./api-route-utils";
 
 export const FetchError = ModernError.subclass("FetchError", {
   props: {
@@ -13,30 +13,13 @@ export const FetchError = ModernError.subclass("FetchError", {
 });
 export const FetchParseError = ModernError.subclass("FetchParseError");
 
-type FetchConfigWithSchema<T> = {
+type FetchConfig<T> = {
   schema: z.ZodType<T>;
   onSuccess?: (data: z.infer<z.ZodType<T>>) => void | Promise<void>;
   onError?: (
     err: InstanceType<typeof FetchError> | InstanceType<typeof FetchParseError>,
   ) => void | Promise<void>;
   onFinished?: () => void | Promise<void>;
-};
-
-type FetchConfigWithoutSchema = {
-  schema?: never;
-  onDone?: () => void | Promise<void>;
-  onError?: (
-    err: InstanceType<typeof FetchError> | InstanceType<typeof FetchParseError>,
-  ) => void | Promise<void>;
-  onFinished?: () => void | Promise<void>;
-};
-
-type FetchConfig<T> = FetchConfigWithoutSchema | FetchConfigWithSchema<T>;
-
-const isConfigWithSchema = <T>(
-  config: FetchConfig<T> | undefined,
-): config is FetchConfigWithSchema<T> => {
-  return !!config?.schema;
 };
 
 export const useFetchFn = () => {
@@ -80,23 +63,20 @@ async function handleResponse<T>(res: Response, config: FetchConfig<T> | undefin
     return;
   }
 
-  try {
-    if (isConfigWithSchema(config)) {
-      const json = (await res.json()) as JSONValue;
+  if (config) {
+    try {
+      const json = tryJsonParse(await res.text());
       const data = config.schema.parse(json);
       void config?.onSuccess?.(data);
-    } else {
-      void config?.onDone?.();
+    } catch (err) {
+      void config?.onError?.(FetchParseError.normalize(err));
     }
-    void config?.onFinished?.();
-  } catch (err) {
-    void config?.onError?.(FetchParseError.normalize(err));
-    void config?.onFinished?.();
   }
+  void config?.onFinished?.();
 }
 
 /** Fetch function, can be replaced to any fetching library, e.g. React Query, useSWR */
-export const useFetch = <T>(endpoint: string, config?: FetchConfigWithSchema<T>) => {
+export const useFetch = <T>(endpoint: string, config?: FetchConfig<T>) => {
   const { fetch, isReady } = useFetchFn();
   const configRef = useRef(config);
 
