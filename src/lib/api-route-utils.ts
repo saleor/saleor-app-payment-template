@@ -53,17 +53,7 @@ export const toStringOrEmpty = (value: unknown) => {
   return "";
 };
 
-export const unknownToError = (maybeError: unknown) => {
-  if (maybeError instanceof Error) {
-    return maybeError;
-  }
-
-  if (typeof maybeError === "string") {
-    return new Error(maybeError);
-  }
-
-  return new Error(String(maybeError));
-};
+export const UnknownError = ModernError.subclass("UnknownError");
 
 type PromiseToTupleResult<T> = [Error, null] | [null, Awaited<T>];
 export const unpackPromise = async <T extends Promise<unknown>>(
@@ -73,8 +63,7 @@ export const unpackPromise = async <T extends Promise<unknown>>(
     const result = await promise;
     return [null, result];
   } catch (maybeError) {
-    const error = unknownToError(maybeError);
-    return [error, null];
+    return [UnknownError.normalize(maybeError), null];
   }
 };
 
@@ -84,7 +73,6 @@ export const unpackThrowable = <T>(throwable: () => T): ThrowableToTupleResult<T
     const result = throwable();
     return [null, result];
   } catch (maybeError) {
-    const error = unknownToError(maybeError);
-    return [error, null];
+    return [UnknownError.normalize(maybeError), null];
   }
 };
