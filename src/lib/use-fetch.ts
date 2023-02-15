@@ -82,6 +82,11 @@ export const useFetch = <T>(endpoint: string, config?: FetchConfig<T>) => {
   const { fetch, isReady } = useFetchFn();
   const configRef = useRef(config);
 
+  // We don't want changes in config to trigger re-fetch
+  useEffect(() => {
+    configRef.current = config;
+  }, [config]);
+
   useEffect(() => {
     if (!isReady) {
       return;
