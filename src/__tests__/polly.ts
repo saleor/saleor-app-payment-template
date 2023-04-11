@@ -226,7 +226,7 @@ const getRecordingSettings = (): Pick<
   PollyConfig,
   "mode" | "recordIfMissing" | "recordFailedRequests"
 > => {
-  // use replay mode by default, override if TEST_POLLY_MODE env variable is passed
+  // use replay mode by default, override if POLLY_MODE env variable is passed
   const mode = env.CI ? "replay" : testEnv.POLLY_MODE;
 
   if (mode === "record") {
