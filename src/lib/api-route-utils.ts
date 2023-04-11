@@ -1,11 +1,10 @@
-import ModernError from "modern-errors";
 import { type z } from "zod";
 import { type NextApiRequest } from "next";
 import type { ValidateFunction } from "ajv";
+import ModernError from "modern-errors";
 import type { JSONValue } from "../types";
+import { JsonSchemaError, JsonParseError } from "@/errors";
 
-export const JsonParseError = ModernError.subclass("JsonParseError");
-export const JsonSchemaError = ModernError.subclass("JsonSchemaError");
 export const parseJsonRequest = async <S extends ValidateFunction>(req: Request, validate: S) => {
   type Result = S extends ValidateFunction<infer T> ? T : never;
   try {
