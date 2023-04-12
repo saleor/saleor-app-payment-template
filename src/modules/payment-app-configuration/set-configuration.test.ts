@@ -36,8 +36,8 @@ describe("Set configuration module", () => {
       await setPaymentAppConfiguration(settings);
       expect(setConfig).toHaveBeenCalledWith({
         apiKey: testEnv.TEST_PAYMENT_APP_API_KEY,
-        apiKeyId: testEnv.TEST_PAYMENT_APP_API_KEY_ID,
-        clientKey: expect.stringContaining("test_"),
+        apiKeyId: null,
+        clientKey: null,
       });
     });
   });

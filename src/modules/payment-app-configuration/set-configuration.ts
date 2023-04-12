@@ -1,3 +1,4 @@
+import { merge } from "lodash-es";
 import { createLogger } from "../../lib/logger";
 import { type PaymentAppConfig, type PaymentAppFormConfig } from "./payment-app-config";
 import { type PaymentAppConfigurator } from "./payment-app-configuration";
@@ -19,10 +20,7 @@ export async function setPaymentAppConfiguration({
     logger.debug("New privatateKey passed in config, checking if valid");
     const existingConfig = await configurator.getConfig();
 
-    const combinedConfig: PaymentAppConfig = {
-      ...config,
-      ...existingConfig,
-    };
+    const combinedConfig: PaymentAppConfig = merge(existingConfig, config);
     logger.debug({ combinedConfig }, "Setting config from user with generated data");
 
     return configurator.setConfig(combinedConfig);

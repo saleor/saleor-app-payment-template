@@ -13,7 +13,3 @@ export const JsonParseError = ModernError.subclass("JsonParseError");
 export const JsonSchemaError = ModernError.subclass("JsonSchemaError");
 export const MissingSaleorApiUrlError = BaseError.subclass(`MissingSaleorApiUrlError`);
 export const MissingAuthDataError = BaseError.subclass(`MissingAuthDataError`);
-
-export const FieldError = ModernError.subclass("FieldError", {
-  props: {},
-});
