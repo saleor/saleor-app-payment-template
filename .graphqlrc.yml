@@ -5,6 +5,9 @@ extensions:
     overwrite: true
     generates:
       generated/graphql.ts:
+        hooks:
+          afterAllFileWrite:
+            - prettier --write
         config:
           immutableTypes: true
           strictScalars: true
