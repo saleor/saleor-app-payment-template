@@ -20,6 +20,7 @@ extensions:
             Date: "string"
             DateTime: "string"
             Decimal: "number"
+            Minute: "number"
             GenericScalar: "JSONValue"
             JSON: "JSONValue"
             JSONString: "string"
