@@ -7,7 +7,7 @@ import { HttpStatus } from "../../lib/api-response";
 import { createClient } from "../../lib/create-graphq-client";
 import {
   type PaymentAppConfig,
-  paymentAppEntrySchema,
+  paymentAppConfigEntrySchema,
 } from "../../modules/payment-app-configuration/config-entry";
 import { saleorApp } from "../../saleor-app";
 import { unpackPromise } from "@/lib/utils";
@@ -83,7 +83,7 @@ async function handlePostRequest(
   res: NextApiResponse<PostPaymentAppConfigResponse | ErrorPaymentAppConfigResponse>,
   ctx: ProtectedHandlerContext,
 ) {
-  const [err, json] = await parseRawBodyToJson(req, paymentAppEntrySchema);
+  const [err, json] = await parseRawBodyToJson(req, paymentAppConfigEntrySchema);
 
   if (err) {
     return res.status(HttpStatus.BadRequest).json({

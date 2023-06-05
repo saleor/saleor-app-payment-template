@@ -9,7 +9,7 @@ import { checkTokenPermissions } from "../modules/jwt/check-token-offline";
 import {
   type PaymentAppConfig,
   paymentAppCombinedFormSchema,
-  paymentAppEntrySchema,
+  paymentAppConfigEntrySchema,
 } from "../modules/payment-app-configuration/config-entry";
 import { AppContainer } from "../modules/ui/AppContainer/AppContainer";
 import { Input } from "../modules/ui/Input/Input";
@@ -43,7 +43,7 @@ const ConfigPage: NextPage = () => {
   } = formMethods;
 
   useFetch("/api/config", {
-    schema: paymentAppEntrySchema,
+    schema: paymentAppConfigEntrySchema,
     onFinished: () => setIsLoading(false),
     onSuccess: (data) => {
       reset(data);

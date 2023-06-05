@@ -1,5 +1,5 @@
 import { createLogger } from "../../lib/logger";
-import { paymentAppEntrySchema, defaultPaymentAppConfig } from "./config-entry";
+import { paymentAppConfigEntrySchema, defaultPaymentAppConfig } from "./config-entry";
 import { type PaymentAppConfigurator } from "./payment-app-configuration";
 
 interface Settings {
@@ -17,7 +17,7 @@ export async function getPaymentAppConfig({ configurator }: Settings) {
 
   if (Object.keys(obfuscatedConfig ?? {}).length > 0) {
     logger.debug("Obfuscated config is not empty, parsing", { obfuscatedConfig });
-    const parsedConfig = paymentAppEntrySchema.parse(obfuscatedConfig);
+    const parsedConfig = paymentAppConfigEntrySchema.parse(obfuscatedConfig);
 
     return {
       ...defaultPaymentAppConfig,
