@@ -7,7 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import { checkTokenPermissions } from "../modules/jwt/check-token-offline";
 import {
-  type PaymentAppConfig,
+  type PaymentAppFormConfigEntry,
   paymentAppCombinedFormSchema,
   paymentAppConfigEntrySchema,
 } from "../modules/payment-app-configuration/config-entry";
@@ -26,10 +26,11 @@ const ConfigPage: NextPage = () => {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const formMethods = useForm<PaymentAppConfig>({
+  const formMethods = useForm<PaymentAppFormConfigEntry>({
     resolver: zodResolver(paymentAppCombinedFormSchema),
     defaultValues: {
       apiKey: "",
+      configurationName: "",
     },
   });
 
