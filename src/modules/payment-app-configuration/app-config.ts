@@ -38,7 +38,7 @@ export const paymentAppUserVisibleConfigSchema = z
 export const defaultPaymentAppConfig: PaymentAppConfig = {
   configurations: [],
   channelToConfigurationId: {},
-}
+};
 
 export type PaymentAppConfig = z.infer<typeof paymentAppConfigSchema>;
 export type PaymentAppConfigUserVisible = z.infer<typeof paymentAppUserVisibleConfigEntriesSchema>;

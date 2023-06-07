@@ -1,4 +1,7 @@
-import { type PaymentAppConfigEntry, type PaymentAppConfigEntryFullyConfigured } from "../config-entry";
+import {
+  type PaymentAppConfigEntry,
+  type PaymentAppConfigEntryFullyConfigured,
+} from "../config-entry";
 
 export const configEntryRequired: PaymentAppConfigEntry = {
   configurationName: "test",
