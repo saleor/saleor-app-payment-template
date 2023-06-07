@@ -34,6 +34,8 @@ export const paymentAppUserVisibleConfigEntrySchema = paymentAppConfigEntryPubli
 // Zod doesn't have a utility for marking fields as non-nullable, we need to use unwrap
 export const paymentAppFullyConfiguredEntrySchema = z
   .object({
+    configurationName: paymentAppConfigEntryPublicSchema.shape.configurationName,
+    configurationId: paymentAppConfigEntryInternalSchema.shape.configurationId,
     apiKey: paymentAppConfigEntryEncryptedSchema.shape.apiKey.unwrap(),
     apiKeyId: paymentAppConfigEntryInternalSchema.shape.apiKeyId.unwrap().unwrap(),
     clientKey: paymentAppConfigEntryPublicSchema.shape.clientKey.unwrap().unwrap(),
@@ -79,8 +81,3 @@ export type PaymentAppUserVisibleConfigEntry = z.infer<
   typeof paymentAppUserVisibleConfigEntrySchema
 >;
 export type PaymentAppFormConfigEntry = z.infer<typeof paymentAppFormConfigEntrySchema>;
-
-export const defaultPaymentAppConfig: PaymentAppConfigEntry =
-  paymentAppConfigEntrySchema.parse(undefined);
-export const defaultPaymentAppFormConfig: PaymentAppFormConfigEntry =
-  paymentAppFormConfigEntrySchema.parse(undefined);

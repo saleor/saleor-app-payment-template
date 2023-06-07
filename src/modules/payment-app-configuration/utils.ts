@@ -9,7 +9,7 @@ import {
 export const obfuscateConfigEntry = (
   entry: PaymentAppConfigEntry,
 ): PaymentAppUserVisibleConfigEntry => {
-  const { apiKey, apiKeyId, clientKey } = entry;
+  const { apiKey, apiKeyId, clientKey, configurationName, configurationId } = entry;
 
   const configValuesToObfuscate = {
     apiKey,
@@ -18,6 +18,8 @@ export const obfuscateConfigEntry = (
   return paymentAppUserVisibleConfigEntrySchema.parse({
     apiKeyId,
     clientKey,
+    configurationId,
+    configurationName,
     ...obfuscateConfig(configValuesToObfuscate),
-  });
+  } satisfies PaymentAppUserVisibleConfigEntry);
 };
