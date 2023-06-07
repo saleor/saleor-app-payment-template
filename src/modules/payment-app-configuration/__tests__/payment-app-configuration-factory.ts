@@ -5,13 +5,8 @@ import {
   createWebhookPrivateSettingsManager,
 } from "../../app-configuration/metadata-manager";
 import { serializeSettingsToMetadata } from "../../app-configuration/app-configuration";
-import {
-  type PaymentAppConfig,
-} from "../config-entry";
-import {
-  PaymentAppConfigurator,
-  privateMetadataKey,
-} from "../payment-app-configuration";
+import { PaymentAppConfigurator, privateMetadataKey } from "../payment-app-configuration";
+import { type PaymentAppConfig } from "../app-config";
 import { env } from "@/lib/env.mjs";
 
 export type MetadataManagerOverride = {
@@ -39,8 +34,5 @@ export const getFakePaymentAppConfigurator = (
     return createWebhookPrivateSettingsManager(privateConfigEntries);
   };
 
-  return new PaymentAppConfigurator(
-    getPrivateSettingsManager(),
-    saleorApiUrl,
-  );
+  return new PaymentAppConfigurator(getPrivateSettingsManager(), saleorApiUrl);
 };

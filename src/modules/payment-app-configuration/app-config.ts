@@ -13,6 +13,8 @@ export const channelMappingSchema = z
   .record(z.string().min(1), z.string().min(1).nullable())
   .default({});
 
+export type ChannelMapping = z.infer<typeof channelMappingSchema>;
+
 export const paymentAppConfigSchema = z
   .object({
     configurations: paymentAppConfigEntriesSchema,
@@ -32,3 +34,6 @@ export const paymentAppUserVisibleConfigSchema = z
     configurations: [],
     channelToConfigurationId: {},
   });
+
+export type PaymentAppConfig = z.infer<typeof paymentAppConfigSchema>;
+export type PaymentAppConfigUserVisible = z.infer<typeof paymentAppUserVisibleConfigEntriesSchema>;

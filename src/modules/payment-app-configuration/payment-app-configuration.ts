@@ -4,12 +4,9 @@ import {
   PrivateMetadataAppConfigurator,
 } from "../app-configuration/app-configuration";
 import { type BrandedEncryptedMetadataManager } from "../app-configuration/metadata-manager";
-import {
-  type PaymentAppConfigFullyConfigured,
-  paymentAppFullyConfiguredEntrySchema,
-  type PaymentAppConfig,
-  type PaymentAppFormConfig,
-} from "./config-entry";
+import { type PaymentAppConfig, paymentAppConfigSchema, type ChannelMapping } from "./app-config";
+import { type PaymentAppConfigEntry } from "./config-entry";
+import { obfuscateConfigEntry } from "./utils";
 import { env } from "@/lib/env.mjs";
 import { BaseError } from "@/errors";
 
@@ -32,21 +29,18 @@ export class PaymentAppConfigurator implements AppConfigurator<PaymentAppConfig>
     this.saleorApiUrl = saleorApiUrl;
   }
 
-  async getConfig(): Promise<PaymentAppConfig | undefined> {
+  async getConfig(): Promise<PaymentAppConfig> {
     const config = await this.configurator.getConfig();
-    // TODO: validate against schema
-    return config;
+    return paymentAppConfigSchema.parse(config);
   }
 
-  async getConfigSafe(): Promise<PaymentAppConfigFullyConfigured> {
-    const config = await this.getConfig();
-    const result = paymentAppFullyConfiguredEntrySchema.safeParse(config);
+  async getConfigObfuscated() {
+    const { configurations, channelToConfigurationId } = await this.getConfig();
 
-    if (result.success) {
-      return result.data;
-    }
-
-    throw new AppNotConfiguredError("App is missing configuration fields", { cause: result.error });
+    return {
+      configurations: configurations.map((entry) => obfuscateConfigEntry(entry)),
+      channelToConfigurationId,
+    };
   }
 
   async getRawConfig(): Promise<MetadataEntry[]> {
@@ -55,26 +49,75 @@ export class PaymentAppConfigurator implements AppConfigurator<PaymentAppConfig>
     return this.configurator.getRawConfig(encryptFn);
   }
 
-  async getConfigObfuscated() {
-    // TODO: Handle nested obfuscation in config entries
-    return this.configurator.getConfigObfuscated();
+  async getConfigEntry(configurationId: string): Promise<PaymentAppConfigEntry | null | undefined> {
+    const config = await this.configurator.getConfig();
+    return config?.configurations.find((entry) => entry.configurationId === configurationId);
   }
 
-  /** Saves config that is available to user */
-  async setConfigPublic(newConfig: PaymentAppFormConfig, replace = false) {
-    // TODO: Do a runtime validation
-    return this.configurator.setConfig(newConfig, replace);
+  /** Adds new config entry or updates existing one */
+  async setConfigEntry(newConfiguration: PaymentAppConfigEntry) {
+    const { configurations } = await this.getConfig();
+
+    const existingEntryIndex = configurations.findIndex(
+      (entry) => entry.configurationId === newConfiguration.configurationId,
+    );
+
+    if (existingEntryIndex !== -1) {
+      const existingEntry = configurations[existingEntryIndex];
+      const mergedEntry = {
+        ...existingEntry,
+        ...newConfiguration,
+      };
+
+      const newConfigurations = configurations.slice(0);
+      newConfigurations[existingEntryIndex] = mergedEntry;
+      return this.setConfig({ configurations: newConfigurations });
+    }
+
+    return this.setConfig({
+      configurations: [...configurations, newConfiguration],
+    });
   }
 
-  // TODO: Add methods for setting entries and mapping
-  // TODO: Add methods for deleting entries and mapping
+  async deleteConfigEntry(configurationId: string) {
+    const oldConfig = await this.getConfig();
+    const newConfigurations = oldConfig.configurations.filter(
+      (entry) => entry.configurationId !== configurationId,
+    );
+    const newMappings = Object.fromEntries(
+      Object.entries(oldConfig.channelToConfigurationId).filter(
+        ([, configId]) => configId !== configurationId,
+      ),
+    );
+    await this.setConfig(
+      { ...oldConfig, configurations: newConfigurations, channelToConfigurationId: newMappings },
+      true,
+    );
+  }
 
-  /** Saves config including hidden fields */
+  /** Adds new mappings or updates exsting ones */
+  async setMapping(newMapping: ChannelMapping) {
+    const { channelToConfigurationId } = await this.getConfig();
+    return this.setConfig({
+      channelToConfigurationId: { ...channelToConfigurationId, ...newMapping },
+    });
+  }
+
+  async deleteMapping(channelId: string) {
+    const { channelToConfigurationId } = await this.getConfig();
+    const newMapping = { ...channelToConfigurationId };
+    delete newMapping[channelId];
+    return this.setConfig({ channelToConfigurationId: newMapping });
+  }
+
+  /** Method that directly updates the config in MetadataConfigurator.
+   *  You should probably use setConfigEntry or setMapping instead */
   async setConfig(newConfig: Partial<PaymentAppConfig>, replace = false) {
     return this.configurator.setConfig(newConfig, replace);
   }
 
   async clearConfig() {
-    return this.configurator.clearConfig();
+    const defaultConfig = paymentAppConfigSchema.parse(undefined);
+    return this.setConfig(defaultConfig, true);
   }
 }

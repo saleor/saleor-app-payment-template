@@ -1,11 +1,12 @@
 import { z } from "zod";
-import { deobfuscateValues } from "../app-configuration/app-configuration";
+import { deobfuscateValues } from "../app-configuration/utils";
 
 export const DANGEROUS_paymentAppConfigEntryHiddenSchema = z.object({
   webhookPassword: z.string().min(1).nullish(),
 });
 
 export const paymentAppConfigEntryInternalSchema = z.object({
+  configurationId: z.string().min(1),
   apiKeyId: z.string().nullish(),
 });
 
@@ -15,18 +16,13 @@ export const paymentAppConfigEntryEncryptedSchema = z.object({
 
 export const paymentAppConfigEntryPublicSchema = z.object({
   clientKey: z.string().min(1).nullish(),
+  configurationName: z.string().min(1),
 });
 
 export const paymentAppConfigEntrySchema = paymentAppConfigEntryInternalSchema
   .merge(paymentAppConfigEntryEncryptedSchema)
   .merge(paymentAppConfigEntryPublicSchema)
-  .merge(DANGEROUS_paymentAppConfigEntryHiddenSchema)
-  .default({
-    apiKey: null,
-    apiKeyId: null,
-    clientKey: null,
-    webhookPassword: null,
-  });
+  .merge(DANGEROUS_paymentAppConfigEntryHiddenSchema);
 
 // Entire config available to user
 export const paymentAppUserVisibleConfigEntrySchema = paymentAppConfigEntryPublicSchema
@@ -54,6 +50,7 @@ export const paymentAppFormConfigEntrySchema = paymentAppConfigEntryEncryptedSch
   .default({
     apiKey: null,
     clientKey: null,
+    configurationName: "",
   })
   .brand("PaymentAppFormConfig");
 
@@ -74,12 +71,16 @@ export type PaymentAppInternalConfig = z.infer<typeof paymentAppConfigEntryInter
 export type PaymentAppEncryptedConfig = z.infer<typeof paymentAppConfigEntryEncryptedSchema>;
 export type PaymentAppPublicConfig = z.infer<typeof paymentAppConfigEntryPublicSchema>;
 
-export type PaymentAppConfig = z.infer<typeof paymentAppConfigEntrySchema>;
-export type PaymentAppConfigFullyConfigured = z.infer<typeof paymentAppFullyConfiguredEntrySchema>;
-export type PaymentAppUserVisibleConfig = z.infer<typeof paymentAppUserVisibleConfigEntrySchema>;
-export type PaymentAppFormConfig = z.infer<typeof paymentAppFormConfigEntrySchema>;
+export type PaymentAppConfigEntry = z.infer<typeof paymentAppConfigEntrySchema>;
+export type PaymentAppConfigEntryFullyConfigured = z.infer<
+  typeof paymentAppFullyConfiguredEntrySchema
+>;
+export type PaymentAppUserVisibleConfigEntry = z.infer<
+  typeof paymentAppUserVisibleConfigEntrySchema
+>;
+export type PaymentAppFormConfigEntry = z.infer<typeof paymentAppFormConfigEntrySchema>;
 
-export const defaultPaymentAppConfig: PaymentAppConfig =
+export const defaultPaymentAppConfig: PaymentAppConfigEntry =
   paymentAppConfigEntrySchema.parse(undefined);
-export const defaultPaymentAppFormConfig: PaymentAppFormConfig =
+export const defaultPaymentAppFormConfig: PaymentAppFormConfigEntry =
   paymentAppFormConfigEntrySchema.parse(undefined);
