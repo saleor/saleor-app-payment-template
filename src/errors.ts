@@ -9,7 +9,6 @@ type CommonProps = {
   name?: number;
 };
 
-
 export const BaseError = ModernError.subclass("BaseError", {
   plugins: [ModernErrorsSerialize],
   props: {} as CommonProps,
