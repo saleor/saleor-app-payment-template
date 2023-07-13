@@ -47,8 +47,8 @@ dependencies:
     specifier: 10.30.0
     version: 10.30.0
   '@urql/exchange-auth':
-    specifier: 1.0.0
-    version: 1.0.0(graphql@16.6.0)
+    specifier: 2.1.5
+    version: 2.1.5(graphql@16.6.0)
   '@vanilla-extract/css':
     specifier: 1.11.0
     version: 1.11.0
@@ -4515,17 +4515,16 @@ packages:
       graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
       graphql: 16.6.0
-      wonka: 6.2.3
+      wonka: 6.3.2
     dev: false
 
-  /@urql/exchange-auth@1.0.0(graphql@16.6.0):
-    resolution: {integrity: sha512-79hqPQab+ifeINOxvQykvqub4ixWHBEIagN4U67ijcHGMfp3c4yEWRk4IJMPwF+OMT7LrRFuv+jRIZTQn/9VwQ==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+  /@urql/exchange-auth@2.1.5(graphql@16.6.0):
+    resolution: {integrity: sha512-HYQXX+h1+VzDFYIhFxPabq3eH6wwCCkxe9s4DIRDI7cPllVLm7ZiyMWb9612gj858hxk0e6fTyem7NHPu7sjvw==}
     dependencies:
       '@urql/core': 3.2.2(graphql@16.6.0)
-      graphql: 16.6.0
-      wonka: 6.2.3
+      wonka: 6.3.2
+    transitivePeerDependencies:
+      - graphql
     dev: false
 
   /@urql/introspection@0.3.3(graphql@16.6.0):
@@ -11447,6 +11446,10 @@ packages:
 
   /wonka@6.2.3:
     resolution: {integrity: sha512-EFOYiqDeYLXSzGYt2X3aVe9Hq1XJG+Hz/HjTRRT4dZE9q95khHl5+7pzUSXI19dbMO1/2UMrTf7JT7/7JrSQSQ==}
+    dev: false
+
+  /wonka@6.3.2:
+    resolution: {integrity: sha512-2xXbQ1LnwNS7egVm1HPhW2FyKrekolzhpM3mCwXdQr55gO+tAiY76rhb32OL9kKsW8taj++iP7C6hxlVzbnvrw==}
     dev: false
 
   /word-wrap@1.2.3:
