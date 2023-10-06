@@ -4,7 +4,7 @@ on:
   merge_group:
   push:
     branches:
-      - canary
+      - main
 
 concurrency:
   group: tests-${{ github.event.pull_request.number || github.ref }}
@@ -60,12 +60,12 @@ jobs:
         if: ${{ github.event_name != 'push' }}
         run: pnpm exec dependency-cruiser src
 
-      - name: Download coverage report from canary
+      - name: Download coverage report from main
         if: ${{ github.event_name != 'push' }}
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow_conclusion: success
-          branch: canary
+          branch: main
           event: push
           name: coverage-artifacts
           path: coverage-main/
@@ -79,7 +79,7 @@ jobs:
           base-coverage-file: coverage-main/report.json
 
       - name: Upload coverage report
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/canary' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         uses: actions/upload-artifact@v3
         with:
           name: coverage-artifacts

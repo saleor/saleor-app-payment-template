@@ -25,7 +25,7 @@
     "test": "vitest",
     "test:record": "POLLY_MODE=record_missing vitest",
     "test:rerecord": "POLLY_MODE=record vitest",
-    "test:ci": "CI=true vitest --coverage --reporter=json --reporter=default && tsx fix-coverage-report.ts",
+    "test:ci": "CI=true vitest --coverage --reporter=json --reporter=default && ./fix-coverage-report.cjs",
     "migrate": "pnpm tsx ./src/run-migrations.ts",
     "ts-node-esm": "node --loader ts-node/esm --experimental-specifier-resolution=node",
     "prepare": "husky install",
@@ -131,7 +131,8 @@
     "setup-polly-jest": "0.11.0",
     "ts-node": "10.9.1",
     "typescript": "5.1.6",
-    "vite-tsconfig-paths": "4.2.0"
+    "vite-tsconfig-paths": "4.2.0",
+    "@changesets/cli": "^2.26.2"
   },
   "engines": {
     "npm": ">=8.0.0 <10.0.0",
