@@ -12,3 +12,6 @@
   <a href="https://docs.saleor.io/docs/3.x/">Docs</a>
 
 </div>
+
+> [!WARNING]  
+> This repository is not actively maintained. Use [app-template](https://github.com/saleor/saleor-app-template) instead.
